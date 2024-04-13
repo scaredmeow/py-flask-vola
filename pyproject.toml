@@ -5,7 +5,20 @@ description = "Add your description here"
 authors = [
     { name = "Neil Riego", email = "neilchristianriego3@gmail.com" }
 ]
-dependencies = []
+dependencies = [
+    "flask>=3.0.2",
+    "flask-marshmallow>=1.2.1",
+    "flask-sqlalchemy>=3.1.1",
+    "psycopg2-binary>=2.9.9",
+    "flask-migrate>=4.0.7",
+    "apifairy>=1.4.0",
+    "python-dotenv>=1.0.1",
+    "gunicorn>=21.2.0",
+    "marshmallow-sqlalchemy>=1.0.0",
+    "flask-admin>=1.6.1",
+    "supabase>=2.4.1",
+    "pillow>=10.3.0",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 
@@ -15,7 +28,13 @@ build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = []
+dev-dependencies = [
+    "pytest>=8.1.1",
+    "black>=24.3.0",
+    "flake8>=7.0.0",
+    "flask-sqlalchemy-stubs @ git+https://github.com/ssfdust/flask-sqlalchemy-stubs",
+    "isort>=5.13.2",
+]
 
 [tool.hatch.metadata]
 allow-direct-references = true
