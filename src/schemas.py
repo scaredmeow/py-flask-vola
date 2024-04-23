@@ -1,4 +1,4 @@
-from enums import OrderDirection
+from vars.enums import OrderDirection
 from models.hackathons import Hackathon
 from src.deps.ma import ma
 from src.deps.supabase import supabase
