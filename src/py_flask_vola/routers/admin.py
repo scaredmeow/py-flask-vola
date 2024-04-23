@@ -12,6 +12,7 @@ from src.deps.supabase import supabase
 from src.models.auth import User, Role
 import uuid
 
+
 class UserModelView(ModelView):
     can_create = False
     can_delete = False

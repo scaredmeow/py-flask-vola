@@ -1,0 +1,16 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<h2>Create an Account</h2>
+<form action="/signup" method="post">
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required>
+    <input type="hidden" name="is_from_admin" value="True">
+
+    <button type="submit">Sign Up</button>
+</form>
+
+{% endblock %}

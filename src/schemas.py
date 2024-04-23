@@ -1,7 +1,5 @@
 from vars.enums import OrderDirection
-from models.hackathons import Hackathon
 from src.deps.ma import ma
-from src.deps.supabase import supabase
 from apifairy import FileField
 from marshmallow import validate, validates_schema, ValidationError
 
@@ -42,27 +40,17 @@ class OKRequestSchema(HTTPRequestSchema):
     description = ma.Str(missing="Request successful", default="Request succeessful")
 
 
-class HackathonSchema(ma.SQLAlchemyAutoSchema):
+class SignupSchema(ma.Schema):
     """
-    Schema for Hackathon
+    Schema for Signup
 
     Details:
-        id = Hackathon ID
-        name = Hackathon Name
-        description = Hackathon Description
-        start_date = Hackathon Start Date
-        end_date = Hackathon End Date
-        created_at = Hackathon Created At
-        updated_at = Hackathon Updated At
+        email = Email
+        password = Password
     """
 
-    class Meta:
-        model = Hackathon
-
-    banner_link = ma.Method("get_image")
-
-    def get_image(self, obj):
-        return supabase.storage.from_("static").get_public_url(obj.upload)
+    email = ma.Str(required=True)
+    password = ma.Str(required=True)
 
 
 class UploadMultipleDocumentsSchema(ma.Schema):
