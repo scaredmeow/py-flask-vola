@@ -112,8 +112,6 @@ packaging==24.0
     # via webargs
 pathspec==0.12.1
     # via black
-pillow==10.3.0
-    # via py-flask-vola
 platformdirs==4.2.0
     # via black
 pluggy==1.4.0

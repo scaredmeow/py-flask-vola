@@ -13,6 +13,8 @@ def register_blueprints(app: Flask):
     # Routers/Controllers
     app.register_blueprint(signup.app, url_prefix="/")
     # API
-    app.register_blueprint(auth.app, name="Authlog", url_prefix=f"{api_url_prefix}/auth")
+    app.register_blueprint(
+        auth.app, name="Authlog", url_prefix=f"{api_url_prefix}/auth"
+    )
 
     return app

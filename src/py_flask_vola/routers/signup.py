@@ -1,13 +1,11 @@
 from flask import (
     Blueprint,
     flash,
-    render_template,
     request,
     redirect,
-    stream_template,
     url_for,
-    session,
 )
+
 from flask_admin.babel import gettext
 from src.deps.supabase import supabase
 
@@ -23,15 +21,12 @@ def signup():
     password = request.form.get("password")
 
     if not email or not password:
-        flash(gettext('Failed to delete user', error=str("Error")), 'error')
+        flash(gettext("Failed to delete user", error=str("Error")), "error")
 
     try:
-        supabase.auth.sign_up(credentials={
-            "email": email,
-            "password": password}
-        )
-        flash(gettext('User created successfully.'), 'success')
+        supabase.auth.sign_up(credentials={"email": email, "password": password})
+        flash(gettext("User created successfully."), "success")
     except Exception as ex:
-        flash(gettext('Failed to create user', error=str(ex)), 'error')
+        flash(gettext(f"Failed to create user, {ex}", error=str(ex)), "error")
 
     return redirect(url_for("admin.index"))

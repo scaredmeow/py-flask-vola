@@ -21,6 +21,19 @@ if TYPE_CHECKING:
 else:
     BaseModel = db.Model
 
+
+class QueryModel(db.Model):
+    __abstract__ = True
+
+    def add_record(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_record(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
 metadata = BaseModel.metadata
 migrate = Migrate()
 

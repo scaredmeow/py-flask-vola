@@ -15,12 +15,11 @@ def signup(body_data: dict):
     Signup
     """
 
-    res = supabase.auth.sign_up(credentials={
-        "email": body_data.get('email'),
-        "password": body_data.get('password')}
+    res = supabase.auth.sign_up(
+        credentials={
+            "email": body_data.get("email"),
+            "password": body_data.get("password"),
+        }
     )
 
-    return {
-        "code": 200,
-        "message": "OK",
-        "description": res}
+    return {"code": 200, "message": "OK", "description": res}
