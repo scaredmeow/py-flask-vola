@@ -1,3 +1,4 @@
+from src.models.user_profile import User
 from vars.enums import OrderDirection
 from src.deps.ma import ma
 from apifairy import FileField
@@ -59,6 +60,11 @@ class UploadMultipleDocumentsSchema(ma.Schema):
 
 class UploadDocumentSchema(ma.Schema):
     document = FileField(required=True)
+
+
+class ProfileSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
 
 
 class StringPaginationSchema(ma.Schema):
