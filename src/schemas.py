@@ -1,4 +1,4 @@
-from src.models.user_profile import User
+from src.models.user_profile import Role, User
 from vars.enums import OrderDirection
 from src.deps.ma import ma
 from apifairy import FileField
@@ -62,9 +62,17 @@ class UploadDocumentSchema(ma.Schema):
     document = FileField(required=True)
 
 
+class RoleSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Role
+
+
 class ProfileSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
+
+    active_role = ma.Nested(RoleSchema)
+
 
 
 class StringPaginationSchema(ma.Schema):
