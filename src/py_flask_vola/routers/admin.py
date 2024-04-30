@@ -9,7 +9,8 @@ from src.deps.admin import admin
 from src.deps.db import db
 from src.deps.supabase import supabase
 
-from src.models.user_profile import User, Role, AthleteProfile, CoachProfile
+from src.models.user_profile import User, AthleteProfile, CoachProfile
+from src.models.social import Post, Comment
 import uuid
 
 
@@ -78,7 +79,17 @@ class AthleteViewModel(ModelView):
     form_columns = ["active_role", "first_name", "middle_name", "last_name", "email", "gender", "phone_number", "birthdate", "athlete_profile"]
 
     def get_query(self):
-        return db.session.query(User).filter(User.role == 2)
+        return db.session.query(User).filter(User.role == 5)
+
+
+class PostModelView(ModelView):
+    column_list = ["title", "content", "user", "likes"]
+    form_columns = ["title", "content", "user", "likes", "comments"]
+
+
+class CommentModelView(ModelView):
+    column_list = ["content", "user"]
+    form_columns = ["content", "user", "post"]
 
 
 admin.add_view(
@@ -86,20 +97,20 @@ admin.add_view(
         model=User,
         session=db.session,
         endpoint="users/edit",
-        name="Edit Users",
-        category="User Management",
+        name="Edit Users Access",
+        category="User Profiles",
     )
 )
 
-admin.add_view(
-    RoleModelView(
-        model=Role,
-        session=db.session,
-        endpoint="roles/add",
-        name="Add Roles",
-        category="User Management",
-    )
-)
+# admin.add_view(
+#     RoleModelView(
+#         model=Role,
+#         session=db.session,
+#         endpoint="roles/add",
+#         name="Add Roles",
+#         category="User Management",
+#     )
+# )
 
 
 admin.add_view(
@@ -119,5 +130,26 @@ admin.add_view(
         name="Athlete",
         endpoint="profiles/athlete",
         category="User Profiles"
+    )
+)
+
+
+admin.add_view(
+    PostModelView(
+        model=Post,
+        session=db.session,
+        name="Posts",
+        endpoint="social/post",
+        category="Social"
+    )
+)
+
+admin.add_view(
+    CommentModelView(
+        model=Comment,
+        session=db.session,
+        name="Comments",
+        endpoint="social/comment",
+        category="Social"
     )
 )

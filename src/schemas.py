@@ -1,3 +1,4 @@
+from src.models.social import Comment, Post
 from src.models.user_profile import Role, User
 from vars.enums import OrderDirection
 from src.deps.ma import ma
@@ -73,6 +74,19 @@ class ProfileSchema(ma.SQLAlchemyAutoSchema):
 
     active_role = ma.Nested(RoleSchema)
 
+
+class PostSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Post
+
+
+class CommentSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Comment
+
+
+class SocialPostSchema(PostSchema):
+    comments = ma.Nested(CommentSchema, many=True)
 
 
 class StringPaginationSchema(ma.Schema):

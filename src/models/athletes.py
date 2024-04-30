@@ -29,3 +29,19 @@ class TeamMember(QueryModel):
     user_id = db.Column(db.UUID, db.ForeignKey("user_profiles.uid"))
     league_id = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
     organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
+
+
+@dataclass
+class TeamStats(QueryModel):
+    __tablename__ = "team_stats"
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
+    )
+    team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
+    league_id = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
+    organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
+    win = db.Column(db.Integer())
+    loss = db.Column(db.Integer())
+    draw = db.Column(db.Integer())

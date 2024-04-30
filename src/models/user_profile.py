@@ -1,6 +1,7 @@
 from src.deps.db import db, QueryModel
 import sqlalchemy as sa
 from dataclasses import dataclass
+from src.models.social import Post, Comment # noqa
 
 
 @dataclass
@@ -10,14 +11,15 @@ class User(QueryModel):
 
     created_at = db.Column(db.TIMESTAMP, server_default=sa.func.now())
     uid = db.Column(db.UUID, primary_key=True)
-    first_name = db.Column(db.TEXT())
-    middle_name = db.Column(db.TEXT())
-    last_name = db.Column(db.TEXT())
-    email = db.Column(db.TEXT())
-    gender = db.Column(db.TEXT())
-    phone_number = db.Column(db.TEXT())
+    first_name = db.Column(db.TEXT)
+    middle_name = db.Column(db.TEXT)
+    last_name = db.Column(db.TEXT)
+    email = db.Column(db.TEXT)
+    gender = db.Column(db.TEXT)
+    phone_number = db.Column(db.TEXT)
     birthdate = db.Column(db.DATE())
     role = db.Column(db.Integer, db.ForeignKey("user_roles.id"))
+    image = db.Column(db.TEXT)
 
     active_role = db.relationship("Role", back_populates="profile")
     athlete_profile = db.relationship(
@@ -26,6 +28,12 @@ class User(QueryModel):
     coach_profile = db.relationship(
         "CoachProfile", back_populates="profile", uselist=False
     )
+
+    comments = db.relationship("Comment", back_populates="user")
+    posts = db.relationship("Post", back_populates="user")
+
+    def __str__(self):
+        return f"{str(self.email)}"
 
 
 @dataclass
@@ -36,9 +44,9 @@ class Role(QueryModel):
     created_at = db.Column(
         db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
     )
-    role_name = db.Column(db.TEXT())
+    role_name = db.Column(db.TEXT)
 
-    profile = db.relationship("User", back_populates="active_role", uselist=False)
+    profile = db.relationship("User", back_populates="active_role")
 
     def __str__(self):
         return self.role_name
@@ -52,7 +60,7 @@ class AthleteProfile(QueryModel):
     created_at = db.Column(
         db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
     )
-    civil_status = db.Column(db.TEXT())
+    civil_status = db.Column(db.TEXT)
 
     profile = db.relationship("User", back_populates="athlete_profile")
 
@@ -65,9 +73,9 @@ class CoachProfile(QueryModel):
     created_at = db.Column(
         db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
     )
-    organization = db.Column(db.TEXT, db.ForeignKey("sport_organizations.id"))
-    team = db.Column(db.TEXT, db.ForeignKey("teams.id"))
-    league = db.Column(db.TEXT, db.ForeignKey("sport_leagues.id"))
+    organization = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
+    team = db.Column(db.Integer, db.ForeignKey("teams.id"))
+    league = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
 
     profile = db.relationship("User", back_populates="coach_profile", uselist=False)
 
