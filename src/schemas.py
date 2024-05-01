@@ -115,6 +115,10 @@ class SocialPostSchema(PostSchema):
         else:
             return f"{diff.seconds} seconds ago"
 
+
+# class PostWithImageSchema(PostSchema):
+
+
 class StringPaginationSchema(ma.Schema):
     class Meta:
         ordered = True

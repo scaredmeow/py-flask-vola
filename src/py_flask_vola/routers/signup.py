@@ -30,3 +30,4 @@ def signup():
         flash(gettext(f"Failed to create user, {ex}", error=str(ex)), "error")
 
     return redirect(url_for("admin.index"))
+

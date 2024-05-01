@@ -1,4 +1,7 @@
+from tempfile import NamedTemporaryFile
+import uuid
 from src.deps.db import db, QueryModel
+from src.deps.supabase import supabase
 import sqlalchemy as sa
 from dataclasses import dataclass
 
@@ -22,6 +25,24 @@ class Post(QueryModel):
 
     def __str__(self):
         return self.title
+
+    def insert_image(self, document):
+        document_uuid: str = str(uuid.uuid4())
+        document_ext: str = document.filename.split(".")[-1]
+        document_name: str = f"{document_uuid}.{document_ext}"
+
+        self.image = document_name
+        self.update_record()
+
+        temp = NamedTemporaryFile(delete=False)
+        document.save(temp.name)
+
+        with open(temp.name, "rb") as f:
+            supabase.storage.from_("static").upload(
+                file=f,
+                path=self.upload,
+                file_options={"content-type": "image/jpeg"}
+            )
 
 
 @dataclass
