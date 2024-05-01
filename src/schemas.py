@@ -80,6 +80,8 @@ class PostSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Post
 
+    user_id = ma.UUID()
+
 
 class CommentSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
