@@ -3,7 +3,7 @@ from src.models.user_profile import Role, User
 from vars.enums import OrderDirection
 from src.deps.ma import ma
 from apifairy import FileField
-from marshmallow import validate, validates_schema, ValidationError
+from marshmallow import post_dump, post_load, validate, validates_schema, ValidationError
 
 paginated_schema_cache: dict = {}
 
@@ -87,6 +87,13 @@ class CommentSchema(ma.SQLAlchemyAutoSchema):
 
 class SocialPostSchema(PostSchema):
     comments = ma.Nested(CommentSchema, many=True)
+    user = ma.Nested(ProfileSchema)
+    comments_count = ma.Integer()
+
+    @post_dump
+    def add_comments_count(self, data, **kwargs):
+        data["comments_count"] = len(data["comments"])
+        return data
 
 
 class StringPaginationSchema(ma.Schema):
