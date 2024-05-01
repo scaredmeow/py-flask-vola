@@ -4,6 +4,7 @@ from vars.enums import OrderDirection
 from src.deps.ma import ma
 from apifairy import FileField
 from marshmallow import post_dump, post_load, validate, validates_schema, ValidationError
+from datetime import datetime
 
 paginated_schema_cache: dict = {}
 
@@ -87,14 +88,32 @@ class CommentSchema(ma.SQLAlchemyAutoSchema):
 
 class SocialPostSchema(PostSchema):
     comments = ma.Nested(CommentSchema, many=True)
+    post_date_string_repr = ma.String()
     user = ma.Nested(ProfileSchema)
     comments_count = ma.Integer()
 
     @post_dump
     def add_comments_count(self, data, **kwargs):
         data["comments_count"] = len(data["comments"])
+
+        # difference of time today and created_at
+        data["post_date_string_repr"] = self.get_date_string_repr(data["created_at"])
         return data
 
+    def get_date_string_repr(self, created_at):
+        created_at = datetime.strptime(str(created_at), "%Y-%m-%dT%H:%M:%S.%f%z")
+        today = datetime.now(created_at.tzinfo)
+        diff = today - created_at
+        if diff.days > 4:
+            return created_at.strftime("%b %d, %Y")
+        elif diff.days > 0:
+            return f"{diff.days} days ago"
+        elif diff.seconds > 3600:
+            return f"{int(diff.seconds/3600)} hours ago"
+        elif diff.seconds > 60:
+            return f"{int(diff.seconds/60)} minutes ago"
+        else:
+            return f"{diff.seconds} seconds ago"
 
 class StringPaginationSchema(ma.Schema):
     class Meta:
