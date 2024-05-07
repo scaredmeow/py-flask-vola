@@ -1,8 +1,8 @@
-from flask import Blueprint, abort
+from flask import Blueprint
 from src.models.social import Post
 from src.deps.db import db
 from src.decorators import paginated_response
-from src.schemas import OKRequestSchema, SocialPostSchema, PostSchema, UploadDocumentSchema
+from src.schemas import OKRequestSchema, SocialPostSchema, PostSchema
 from apifairy import body, response
 
 app = Blueprint("Social", __name__)
@@ -23,3 +23,4 @@ def create_post(data: dict):
     post = Post(**data)
     db.session.add(post)
     db.session.commit()
+

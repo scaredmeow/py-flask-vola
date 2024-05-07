@@ -128,6 +128,11 @@ class TeamSchema(ma.SQLAlchemyAutoSchema):
     user_id = ma.UUID(load_only=True)
 
 
+class SportSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Sport
+
+
 class TeamMemberSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TeamMember
@@ -135,11 +140,6 @@ class TeamMemberSchema(ma.SQLAlchemyAutoSchema):
     user_id = ma.UUID(load_only=True)
     created_at = ma.DateTime(data_key="joined_at")
     user = ma.Nested(ProfileSchema, dump_only=True)
-
-
-class SportSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Sport
 
 
 class TeamsSchema(TeamSchema):

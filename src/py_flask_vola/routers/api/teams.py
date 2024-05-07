@@ -36,3 +36,4 @@ def join_team(args_data: dict, team_id: int):
     db.session.add(team_member)
     db.session.commit()
     return {"description": "User joined successfully"}
+
