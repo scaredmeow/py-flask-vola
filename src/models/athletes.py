@@ -14,6 +14,7 @@ class Team(QueryModel):
     )
     name = db.Column(db.TEXT())
     description = db.Column(db.TEXT())
+    image = db.Column(db.TEXT())
     sport_id = db.Column(db.Integer, db.ForeignKey("sports.id"))
     organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
 
