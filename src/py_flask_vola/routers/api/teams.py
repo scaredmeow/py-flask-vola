@@ -9,9 +9,9 @@ app = Blueprint("Teams", __name__)
 
 
 @app.route("/", methods=["GET"])
-@paginated_response(TeamsSchema)
+@response(TeamsSchema)
 def get_all_teams(data: dict):
-    return Team.query
+    return Team.query.all()
 
 
 @app.route("/", methods=["POST"])

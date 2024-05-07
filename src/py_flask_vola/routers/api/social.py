@@ -9,7 +9,7 @@ app = Blueprint("Social", __name__)
 
 
 @app.route("/posts", methods=["GET"])
-@paginated_response(SocialPostSchema)
+@response(SocialPostSchema)
 def get_all_posts(data: dict):
     return Post.query
 
