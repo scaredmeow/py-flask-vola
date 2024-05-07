@@ -31,6 +31,7 @@ class TeamMember(QueryModel):
         db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
     )
     team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
+    is_owner = db.Column(db.BOOLEAN(), default=False)
     user_id = db.Column(db.UUID, db.ForeignKey("user_profiles.uid"))
     # league_id = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
     # organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))

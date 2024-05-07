@@ -125,6 +125,7 @@ class TeamSchema(ma.SQLAlchemyAutoSchema):
         model = Team
 
     sport_id = ma.Integer(load_only=True)
+    user_id = ma.UUID(load_only=True)
 
 
 class TeamMemberSchema(ma.SQLAlchemyAutoSchema):

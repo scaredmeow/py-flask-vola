@@ -15,11 +15,15 @@ def get_all_teams(data: dict):
 
 
 @app.route("/", methods=["POST"])
-@body(TeamSchema)
+@body(TeamSchema(exclude=("id", "created_at")))
 @response(OKRequestSchema)
 def create_team(data: dict):
-    team = Team(**data)
+    team = Team(name=data.get("name"), description=data.get("description"), sport_id=data.get("sport_id"))
     db.session.add(team)
+    db.session.commit()
+
+    team_member = TeamMember(user_id=data.get("user_id"), team_id=team.id, is_owner=True)
+    db.session.add(team_member)
     db.session.commit()
     return {"description": "Team created successfully"}
 
