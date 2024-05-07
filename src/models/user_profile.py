@@ -31,6 +31,7 @@ class User(QueryModel):
 
     comments = db.relationship("Comment", back_populates="user")
     posts = db.relationship("Post", back_populates="user")
+    teams = db.relationship("TeamMember", back_populates="user")
 
     def __str__(self):
         return f"{str(self.email)}"

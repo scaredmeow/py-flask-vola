@@ -1,3 +1,5 @@
+from src.models.sports import Sport
+from src.models.athletes import Team, TeamMember
 from src.models.social import Comment, Post
 from src.models.user_profile import Role, User
 from vars.enums import OrderDirection
@@ -117,6 +119,37 @@ class SocialPostSchema(PostSchema):
         else:
             return f"{diff.seconds} seconds ago"
 
+
+class TeamSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Team
+
+    sport_id = ma.Integer(load_only=True)
+
+
+class TeamMemberSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TeamMember
+
+    user_id = ma.UUID(load_only=True)
+    created_at = ma.DateTime(data_key="joined_at")
+    user = ma.Nested(ProfileSchema, dump_only=True)
+
+
+class SportSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Sport
+
+
+class TeamsSchema(TeamSchema):
+    team_members = ma.Nested(TeamMemberSchema, many=True)
+    sport = ma.Nested(SportSchema)
+    team_member_count = ma.Integer(dump_only=True)
+
+    @post_dump
+    def add_team_member_count(self, data, **kwargs):
+        data["team_member_count"] = len(data["team_members"])
+        return data
 
 # class PostWithImageSchema(PostSchema):
 

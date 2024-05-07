@@ -27,9 +27,6 @@ certifi==2024.2.2
 click==8.1.7
     # via black
     # via flask
-colorama==0.4.6
-    # via click
-    # via pytest
 deprecation==2.1.0
     # via postgrest
 flake8==7.0.0

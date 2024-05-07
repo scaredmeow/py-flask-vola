@@ -1,6 +1,7 @@
 from src.deps.db import db, QueryModel
 import sqlalchemy as sa
 from dataclasses import dataclass
+from src.models.sports import Sport, League, Organization
 
 
 @dataclass
@@ -16,6 +17,10 @@ class Team(QueryModel):
     sport_id = db.Column(db.Integer, db.ForeignKey("sports.id"))
     organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
 
+    team_members = db.relationship("TeamMember", back_populates="team")
+    sport = db.relationship("Sport", back_populates="teams")
+    organization = db.relationship("Organization", back_populates="teams")
+
 
 @dataclass
 class TeamMember(QueryModel):
@@ -27,8 +32,10 @@ class TeamMember(QueryModel):
     )
     team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
     user_id = db.Column(db.UUID, db.ForeignKey("user_profiles.uid"))
-    league_id = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
-    organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
+    # league_id = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
+    # organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
+    team = db.relationship("Team", back_populates="team_members")
+    user = db.relationship("User", back_populates="teams")
 
 
 @dataclass
