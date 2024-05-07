@@ -9,8 +9,8 @@ app = Blueprint("Social", __name__)
 
 
 @app.route("/posts", methods=["GET"])
-@response(SocialPostSchema)
-def get_all_posts(data: dict):
+@response(SocialPostSchema(many=True))
+def get_all_posts():
     return Post.query.all()
 
 
