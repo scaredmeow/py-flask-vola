@@ -18,7 +18,10 @@ def get_all_teams():
 @body(TeamSchema(exclude=("id", "created_at")))
 @response(OKRequestSchema)
 def create_team(data: dict):
-    team = Team(name=data.get("name"), description=data.get("description"), sport_id=data.get("sport_id"))
+    team = Team(name=data.get("name"),
+                description=data.get("description"),
+                sport_id=data.get("sport_id"),
+                image=data.get("image"))
     db.session.add(team)
     db.session.commit()
 
