@@ -133,6 +133,13 @@ class SportSchema(ma.SQLAlchemyAutoSchema):
         model = Sport
 
 
+class TaskProgressSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TrainingTasksProgress
+
+    user_id = ma.UUID()
+
+
 class TeamMemberSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TeamMember
@@ -140,6 +147,15 @@ class TeamMemberSchema(ma.SQLAlchemyAutoSchema):
     user_id = ma.UUID(load_only=True)
     created_at = ma.DateTime(data_key="joined_at")
     user = ma.Nested(ProfileSchema, dump_only=True)
+
+    tasks = ma.Nested(TaskProgressSchema, many=True)
+
+    task_count = ma.Integer(dump_only=True)
+
+    @post_dump
+    def add_task_count(self, data, **kwargs):
+        data["task_count"] = len(data["tasks"])
+        return data
 
     @post_dump(pass_many=True)
     def exclude_is_pending(self, data, many, **kwargs):
@@ -162,6 +178,7 @@ class TeamMemberSchemaNormal(ma.SQLAlchemyAutoSchema):
     user = ma.Nested(ProfileSchema, dump_only=True)
 
 
+
 class TeamsSchema(TeamSchema):
     team_members = ma.Nested(TeamMemberSchema, many=True)
     sport = ma.Nested(SportSchema)
@@ -176,13 +193,6 @@ class TeamsSchema(TeamSchema):
 class TasksSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TrainingTasks
-
-
-class TaskProgressSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = TrainingTasksProgress
-
-    user_id = ma.UUID()
 
 
 class WholeTasksSchema(TasksSchema):

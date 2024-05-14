@@ -37,6 +37,7 @@ class TeamMember(QueryModel):
     pending = db.Column(db.BOOLEAN(), default=True)
     # league_id = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
     # organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
+    tasks = db.relationship("TrainingTasksProgress", back_populates="team_member")
     team = db.relationship("Team", back_populates="team_members")
     user = db.relationship("User", back_populates="teams")
 
@@ -101,5 +102,7 @@ class TrainingTasksProgress(QueryModel):
     user_id = db.Column(db.UUID, db.ForeignKey("user_profiles.uid"))
     task_status = db.Column(db.BOOLEAN(), default=False)
     team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
+    team_member_id = db.Column(db.Integer, db.ForeignKey("team_members.id"))
 
+    team_member = db.relationship("TeamMember", back_populates="tasks")
     task = db.relationship("TrainingTasks", back_populates="progress")
