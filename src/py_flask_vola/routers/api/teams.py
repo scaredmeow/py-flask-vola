@@ -58,3 +58,17 @@ def join_team(args_data: dict, team_id: int):
     db.session.commit()
     return {"description": "User joined successfully"}
 
+
+@app.route("/<int:team_id>/leave", methods=["POST"])
+@body(TeamMemberSchema(only=("user_id",)))
+@response(OKRequestSchema)
+def leave_team(args_data: dict, team_id: int):
+    team_member = TeamMember.query.filter_by(user_id=args_data.get("user_id"), team_id=team_id).first()
+    db.session.delete(team_member)
+    db.session.commit()
+
+    user_obj = User.query.get(args_data.get("user_id"))
+
+    user_obj.team_id = None
+    db.session.commit()
+    return {"description": "User left the team successfully"}
