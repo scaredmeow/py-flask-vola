@@ -105,15 +105,15 @@ def run_migrations_online():
     connectable = get_engine()
 
     with connectable.connect() as connection:
-        # context.configure(
-        #     connection=connection, target_metadata=get_metadata(), **conf_args
-        # )  # DISABLES GUARD FOR DROP AND ALTERING TABLES
         context.configure(
-            connection=connection,
-            target_metadata=get_metadata(),
-            include_object=include_object,
-            **conf_args,
-        )
+            connection=connection, target_metadata=get_metadata(), **conf_args
+        )  # DISABLES GUARD FOR DROP AND ALTERING TABLES
+        # context.configure(
+        #     connection=connection,
+        #     target_metadata=get_metadata(),
+        #     include_object=include_object,
+        #     **conf_args,
+        # )
 
         with context.begin_transaction():
             context.run_migrations()

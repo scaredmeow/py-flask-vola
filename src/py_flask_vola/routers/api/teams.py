@@ -1,10 +1,11 @@
 from flask import Blueprint
-from src.models.athletes import Team, TeamMember
+from src.models.athletes import Team, TeamMember, TrainingTasks, TrainingTasksProgress
 from src.models.user_profile import User
 from src.deps.db import db
 from src.decorators import paginated_response
-from src.schemas import OKRequestSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema
+from src.schemas import OKRequestSchema, TaskProgressSchema, TasksSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema, WholeTasksSchema
 from apifairy import body, response
+from datetime import datetime
 
 app = Blueprint("Teams", __name__)
 
@@ -78,3 +79,42 @@ def leave_team(args_data: dict, team_id: int):
 @response(TeamMemberSchemaNormal(many=True))
 def get_pending_requests(team_id: int):
     return TeamMember.query.filter_by(team_id=team_id, pending=True).all()
+
+
+@app.route("/tasks/<int:team_id>", methods=["GET"])
+@response(WholeTasksSchema(many=True))
+def get_team_tasks(team_id: int):
+    return TrainingTasks.query.filter_by(team_id=team_id).all()
+
+
+@app.route("/tasks/<int:team_id>", methods=["POST"])
+@body(TasksSchema(exclude=("id", "created_at")))
+@response(OKRequestSchema)
+def create_team_tasks(data: dict, team_id: int):
+    task = TrainingTasks(team_id=team_id, task_name=data.get("task_name"), task_description=data.get("task_description"), task_date=data.get("task_date") or datetime.now())
+    db.session.add(task)
+    db.session.commit()
+    return {"description": "Task created successfully"}
+
+
+@app.route("/tasks/<int:task_id>/complete", methods=["POST"])
+@body(TaskProgressSchema(only=(["user_id"])))
+@response(OKRequestSchema)
+def complete_individual_tasks(data: dict, task_id: int):
+    complete_task = TrainingTasksProgress(task_id=task_id, user_id=data.get("user_id"), task_status=True)
+    db.session.add(complete_task)
+    db.session.commit()
+    return {"description": "Task completed successfully"}
+
+
+@app.route("/tasks/athlete/<int:team_id>", methods=["POST"])
+@body(TaskProgressSchema(only=(["user_id"])))
+@response(WholeTasksSchema(many=True))
+def get_athlete_tasks(data: dict, team_id: int):
+
+    query_set = []
+
+    for i in TrainingTasks.query.filter_by(team_id=team_id).all():
+        if data.get("user_id") not in [abc.user_id for abc in i.progress]:
+            query_set.append(i)
+    return query_set

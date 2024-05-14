@@ -71,3 +71,35 @@ class PlayerStats(QueryModel):
     stats_value = db.Column(db.TEXT())
 
     user = db.relationship("User", back_populates="stats")
+
+
+@dataclass
+class TrainingTasks(QueryModel):
+    __tablename__ = "training_tasks"
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
+    )
+    team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
+    task_name = db.Column(db.TEXT())
+    task_description = db.Column(db.TEXT())
+    task_date = db.Column(db.TIMESTAMP(timezone=True), server_default=sa.func.now())
+
+    progress = db.relationship("TrainingTasksProgress", back_populates="task")
+
+
+@dataclass
+class TrainingTasksProgress(QueryModel):
+    __tablename__ = "training_tasks_progress"
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
+    )
+    task_id = db.Column(db.Integer, db.ForeignKey("training_tasks.id"))
+    user_id = db.Column(db.UUID, db.ForeignKey("user_profiles.uid"))
+    task_status = db.Column(db.BOOLEAN(), default=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
+
+    task = db.relationship("TrainingTasks", back_populates="progress")

@@ -1,5 +1,5 @@
 from src.models.sports import Sport
-from src.models.athletes import Team, TeamMember
+from src.models.athletes import Team, TeamMember, TrainingTasks, TrainingTasksProgress
 from src.models.social import Comment, Post
 from src.models.user_profile import Role, User
 from vars.enums import OrderDirection
@@ -172,7 +172,21 @@ class TeamsSchema(TeamSchema):
         data["team_member_count"] = len(data["team_members"])
         return data
 
-# class PostWithImageSchema(PostSchema):
+
+class TasksSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TrainingTasks
+
+
+class TaskProgressSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TrainingTasksProgress
+
+    user_id = ma.UUID()
+
+
+class WholeTasksSchema(TasksSchema):
+    progress = ma.Nested(TaskProgressSchema(only=(['user_id','task_status'])), many=True)
 
 
 class StringPaginationSchema(ma.Schema):
