@@ -15,6 +15,12 @@ def get_all_teams():
     return Team.query.all()
 
 
+@app.route("/<int: team_id>", methods=["GET"])
+@response(TeamsSchema())
+def get_specific_teams(team_id: int):
+    return Team.query.get(team_id)
+
+
 @app.route("/", methods=["POST"])
 @body(TeamSchema(exclude=("id", "created_at")))
 @response(OKRequestSchema)
