@@ -3,7 +3,7 @@ from src.models.athletes import Team, TeamMember, TrainingTasks, TrainingTasksPr
 from src.models.user_profile import User
 from src.deps.db import db
 from src.decorators import paginated_response
-from src.schemas import OKRequestSchema, TaskProgressSchema, TasksSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema, WholeTasksSchema
+from src.schemas import HTTPRequestSchema, OKRequestSchema, TaskProgressSchema, TasksSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema, WholeTasksSchema
 from apifairy import body, response
 from datetime import datetime
 
@@ -121,7 +121,9 @@ def create_team_tasks(data: dict, team_id: int):
 @body(TaskProgressSchema(only=(["user_id"])))
 @response(OKRequestSchema)
 def complete_individual_tasks(data: dict, task_id: int):
-    complete_task = TrainingTasksProgress(task_id=task_id, user_id=data.get("user_id"), task_status=True)
+    complete_task = TrainingTasksProgress(task_id=task_id, user_id=data.get("user_id"), task_status=True,
+                                          team_id=TrainingTasks.query.get(task_id).team_id,
+                                          team_member_id=TeamMember.query.filter_by(user_id=data.get("user_id")))
     db.session.add(complete_task)
     db.session.commit()
     return {"description": "Task completed successfully"}
@@ -138,3 +140,15 @@ def get_athlete_tasks(data: dict, team_id: int):
         if data.get("user_id") not in [abc.user_id for abc in i.progress]:
             query_set.append(i)
     return query_set
+
+
+@app.route("/tasks/<int:team_id>/progress", methods=["GET"])
+@response(HTTPRequestSchema())
+def get_task_progress(team_id: int):
+
+    number_of_tasks = len(TrainingTasks.query.filter_by(team_id=team_id).all())
+    number_of_team_members = len(TeamMember.query.filter_by(team_id=team_id).all())
+    number_of_completed_tasks = len(TrainingTasksProgress.query.filter_by(team_id=team_id, task_status=True).all())
+
+    percentage = (number_of_completed_tasks / (number_of_tasks*number_of_team_members))
+    return {"message": percentage}
