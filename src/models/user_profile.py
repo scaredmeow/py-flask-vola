@@ -11,15 +11,16 @@ class User(QueryModel):
 
     created_at = db.Column(db.TIMESTAMP, server_default=sa.func.now())
     uid = db.Column(db.UUID, primary_key=True)
-    first_name = db.Column(db.TEXT)
-    middle_name = db.Column(db.TEXT)
-    last_name = db.Column(db.TEXT)
-    email = db.Column(db.TEXT)
-    gender = db.Column(db.TEXT)
-    phone_number = db.Column(db.TEXT)
+    first_name = db.Column(db.TEXT())
+    middle_name = db.Column(db.TEXT())
+    last_name = db.Column(db.TEXT())
+    email = db.Column(db.TEXT())
+    gender = db.Column(db.TEXT())
+    phone_number = db.Column(db.TEXT())
     birthdate = db.Column(db.DATE())
     role = db.Column(db.Integer, db.ForeignKey("user_roles.id"))
-    image = db.Column(db.TEXT)
+    image = db.Column(db.TEXT())
+    team_id = db.Column(db.TEXT())
 
     active_role = db.relationship("Role", back_populates="profile")
     athlete_profile = db.relationship(
@@ -32,6 +33,7 @@ class User(QueryModel):
     comments = db.relationship("Comment", back_populates="user")
     posts = db.relationship("Post", back_populates="user")
     teams = db.relationship("TeamMember", back_populates="user")
+    stats = db.relationship("PlayerStats", back_populates="user")
 
     def __str__(self):
         return f"{str(self.email)}"
@@ -45,7 +47,7 @@ class Role(QueryModel):
     created_at = db.Column(
         db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
     )
-    role_name = db.Column(db.TEXT)
+    role_name = db.Column(db.TEXT())
 
     profile = db.relationship("User", back_populates="active_role")
 
@@ -61,7 +63,7 @@ class AthleteProfile(QueryModel):
     created_at = db.Column(
         db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
     )
-    civil_status = db.Column(db.TEXT)
+    civil_status = db.Column(db.TEXT())
 
     profile = db.relationship("User", back_populates="athlete_profile")
 

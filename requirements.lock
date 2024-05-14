@@ -49,8 +49,6 @@ flask-sqlalchemy==3.1.1
     # via py-flask-vola
 gotrue==2.4.2
     # via supabase
-greenlet==3.0.3
-    # via sqlalchemy
 gunicorn==21.2.0
     # via py-flask-vola
 h11==0.14.0

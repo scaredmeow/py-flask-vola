@@ -51,11 +51,9 @@ flask-sqlalchemy==3.1.1
     # via flask-migrate
     # via flask-sqlalchemy-stubs
     # via py-flask-vola
-flask-sqlalchemy-stubs @ git+https://github.com/ssfdust/flask-sqlalchemy-stubs@b75b56d5a4331a20fc7f97d1b1982b9f02806b70
+flask-sqlalchemy-stubs @ git+https://github.com/ssfdust/flask-sqlalchemy-stubs
 gotrue==2.4.2
     # via supabase
-greenlet==3.0.3
-    # via sqlalchemy
 gunicorn==21.2.0
     # via py-flask-vola
 h11==0.14.0

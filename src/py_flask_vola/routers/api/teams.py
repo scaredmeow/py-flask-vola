@@ -1,5 +1,6 @@
 from flask import Blueprint
 from src.models.athletes import Team, TeamMember
+from src.models.user_profile import User
 from src.deps.db import db
 from src.decorators import paginated_response
 from src.schemas import OKRequestSchema, TeamSchema, TeamMemberSchema, TeamsSchema
@@ -28,6 +29,12 @@ def create_team(data: dict):
     team_member = TeamMember(user_id=data.get("user_id"), team_id=team.id, is_owner=True)
     db.session.add(team_member)
     db.session.commit()
+
+    user_obj = User.query.get(data.get("user_id"))
+
+    user_obj.team_id = team.id
+    db.session.commit()
+
     return {"description": "Team created successfully"}
 
 

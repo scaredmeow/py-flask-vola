@@ -54,3 +54,19 @@ class TeamStats(QueryModel):
     win = db.Column(db.Integer())
     loss = db.Column(db.Integer())
     draw = db.Column(db.Integer())
+
+
+@dataclass
+class PlayerStats(QueryModel):
+    __tablename__ = "player_stats"
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
+    )
+    user_id = db.Column(db.UUID, db.ForeignKey("user_profiles.uid"))
+    team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
+    stats_key = db.Column(db.TEXT())
+    stats_value = db.Column(db.TEXT())
+
+    user = db.relationship("User", back_populates="stats")
