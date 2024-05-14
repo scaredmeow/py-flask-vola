@@ -51,5 +51,10 @@ def join_team(args_data: dict, team_id: int):
     team_member = TeamMember(user_id=args_data.get("user_id"), team_id=team_id)
     db.session.add(team_member)
     db.session.commit()
+
+    user_obj = User.query.get(args_data.get("user_id"))
+
+    user_obj.team_id = team_id
+    db.session.commit()
     return {"description": "User joined successfully"}
 
