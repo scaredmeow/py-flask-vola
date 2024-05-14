@@ -3,7 +3,7 @@ from src.models.athletes import Team, TeamMember
 from src.models.user_profile import User
 from src.deps.db import db
 from src.decorators import paginated_response
-from src.schemas import OKRequestSchema, TeamSchema, TeamMemberSchema, TeamsSchema
+from src.schemas import OKRequestSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema
 from apifairy import body, response
 
 app = Blueprint("Teams", __name__)
@@ -72,3 +72,9 @@ def leave_team(args_data: dict, team_id: int):
     user_obj.team_id = None
     db.session.commit()
     return {"description": "User left the team successfully"}
+
+
+@app.route("/<int:team_id>/pending", methods=["GET"])
+@response(TeamMemberSchemaNormal(many=True))
+def get_pending_requests(team_id: int):
+    return TeamMember.query.filter_by(team_id=team_id, pending=True).all()

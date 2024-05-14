@@ -141,6 +141,26 @@ class TeamMemberSchema(ma.SQLAlchemyAutoSchema):
     created_at = ma.DateTime(data_key="joined_at")
     user = ma.Nested(ProfileSchema, dump_only=True)
 
+    @post_dump(pass_many=True)
+    def exclude_is_pending(self, data, many, **kwargs):
+        print(data)
+        print(many)
+        # if not data.get("pending"):
+        return_data = []
+        for d in data:
+            if not d.get("pending"):
+                return_data.append(d)
+        return return_data
+
+
+class TeamMemberSchemaNormal(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TeamMember
+
+    user_id = ma.UUID(load_only=True)
+    created_at = ma.DateTime(data_key="joined_at")
+    user = ma.Nested(ProfileSchema, dump_only=True)
+
 
 class TeamsSchema(TeamSchema):
     team_members = ma.Nested(TeamMemberSchema, many=True)

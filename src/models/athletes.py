@@ -34,6 +34,7 @@ class TeamMember(QueryModel):
     team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
     is_owner = db.Column(db.BOOLEAN(), default=False)
     user_id = db.Column(db.UUID, db.ForeignKey("user_profiles.uid"))
+    pending = db.Column(db.BOOLEAN(), default=True)
     # league_id = db.Column(db.Integer, db.ForeignKey("sport_leagues.id"))
     # organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
     team = db.relationship("Team", back_populates="team_members")
