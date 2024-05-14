@@ -84,7 +84,7 @@ class TrainingTasks(QueryModel):
     team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
     task_name = db.Column(db.TEXT())
     task_description = db.Column(db.TEXT())
-    task_date = db.Column(db.TIMESTAMP(timezone=True), server_default=sa.func.now())
+    task_date = db.Column(db.DATE(), server_default=sa.func.now())
 
     progress = db.relationship("TrainingTasksProgress", back_populates="task")
 
