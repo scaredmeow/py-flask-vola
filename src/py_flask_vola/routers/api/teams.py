@@ -33,7 +33,7 @@ def create_team(data: dict):
     db.session.add(team)
     db.session.commit()
 
-    team_member = TeamMember(user_id=data.get("user_id"), team_id=team.id, is_owner=True)
+    team_member = TeamMember(user_id=data.get("user_id"), team_id=team.id, is_owner=True, pending=False)
     db.session.add(team_member)
     db.session.commit()
 
@@ -43,6 +43,26 @@ def create_team(data: dict):
     db.session.commit()
 
     return {"description": "Team created successfully"}
+
+
+@app.route("/<int:team_id>/accept", methods=["POST"])
+@body(TeamMemberSchema(only=("user_id",)))
+@response(OKRequestSchema)
+def accept_team_request(args_data: dict, team_id: int):
+    team_member = TeamMember.query.filter_by(user_id=args_data.get("user_id"), team_id=team_id).first()
+    team_member.pending = False
+    db.session.commit()
+    return {"description": "User accepted successfully"}
+
+
+@app.route("/<int:team_id>/reject", methods=["POST"])
+@body(TeamMemberSchema(only=("user_id",)))
+@response(OKRequestSchema)
+def reject_team_request(args_data: dict, team_id: int):
+    team_member = TeamMember.query.filter_by(user_id=args_data.get("user_id"), team_id=team_id).first()
+    db.session.delete(team_member)
+    db.session.commit()
+    return {"description": "User rejected successfully"}
 
 
 @app.route("/<int:team_id>/join", methods=["POST"])
