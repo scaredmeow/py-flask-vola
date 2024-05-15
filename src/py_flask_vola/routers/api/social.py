@@ -4,6 +4,8 @@ from src.deps.db import db
 from src.decorators import paginated_response
 from src.schemas import OKRequestSchema, SocialPostSchema, PostSchema
 from apifairy import body, response
+from sqlalchemy.sql import text
+
 
 app = Blueprint("Social", __name__)
 
@@ -11,7 +13,7 @@ app = Blueprint("Social", __name__)
 @app.route("/posts", methods=["GET"])
 @response(SocialPostSchema(many=True))
 def get_all_posts():
-    return Post.query.all()
+    return Post.query.order_by(text("posts.created_at desc")).all()
 
 
 @app.route("/posts/new", methods=["POST"])
