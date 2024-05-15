@@ -25,3 +25,14 @@ def update_user(data: dict):
         setattr(user, key, value)
     db.session.commit()
     return user
+
+
+@app.route("/requests", methods=["POST"])
+@body(ProfileSchema(only=["requested_role", "uid"]))
+@response(ProfileSchema)
+def requests_list(role: str):
+    user_obj = User.query.filter_by(uid=role.get("uid")).first()
+    user_obj.requested_role = role.get("requested_role")
+    db.session.commit()
+    return {"code": 200, "message": "OK", "description": "Role requested"}
+

@@ -213,6 +213,13 @@ class ScheduleSpecificSchema(ma.Schema):
     user_id = ma.UUID()
 
 
+class StatisticsSchema(ma.Schema):
+    id = ma.Integer()
+    stats_key = ma.Str()
+    stats_value = ma.Str()
+    user_id = ma.UUID()
+
+
 class StringPaginationSchema(ma.Schema):
     class Meta:
         ordered = True

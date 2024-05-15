@@ -19,7 +19,7 @@ class UserModelView(ModelView):
     can_delete = False
     column_labels = dict(uid="User ID", active_role="Role")
 
-    column_list = ["uid", "email", "active_role", "delete_user"]
+    column_list = ["uid", "email", "requested_role", "active_role", "delete_user"]
     form_columns = ["active_role"]
 
     def _delete_user(view, context, model, name):

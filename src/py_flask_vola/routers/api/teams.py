@@ -1,10 +1,10 @@
 from flask import Blueprint
 from src.models.social import Post
-from src.models.athletes import Team, TeamMember, TeamSchedule, TrainingTasks, TrainingTasksProgress
+from src.models.athletes import PlayerStats, Team, TeamMember, TeamSchedule, TrainingTasks, TrainingTasksProgress
 from src.models.user_profile import User
 from src.deps.db import db
 from src.decorators import paginated_response
-from src.schemas import HTTPRequestSchema, OKRequestSchema, ScheduleSchema, ScheduleSpecificSchema, TaskProgressSchema, TasksSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema, WholeTasksSchema
+from src.schemas import HTTPRequestSchema, OKRequestSchema, ScheduleSchema, ScheduleSpecificSchema, StatisticsSchema, TaskProgressSchema, TasksSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema, WholeTasksSchema
 from apifairy import body, response
 from datetime import datetime
 
@@ -151,7 +151,10 @@ def get_task_progress(team_id: int):
     number_of_team_members = len(TeamMember.query.filter_by(team_id=team_id).all())
     number_of_completed_tasks = len(TrainingTasksProgress.query.filter_by(team_id=team_id, task_status=True).all())
 
-    percentage = (number_of_completed_tasks / (number_of_tasks*number_of_team_members))
+    try:
+        percentage = (number_of_completed_tasks / (number_of_tasks*number_of_team_members))
+    except ZeroDivisionError:
+        percentage = 0
     return {"message": percentage}
 
 
@@ -180,3 +183,28 @@ def create_schedule(data: dict, team_id: int):
     db.session.add(social)
     db.session.commit()
     return {"description": "Schedule created successfully"}
+
+
+@app.route("/stats/add", methods=["POST"])
+@body(StatisticsSchema())
+@response(OKRequestSchema)
+def add_stats(data: dict):
+    stats = PlayerStats(user_id=data.get("user_id"), stats_key=data.get("stats_key"), stats_value=data.get("stats_value"))
+    db.session.add(stats)
+    db.session.commit()
+    return {"description": "Stats added successfully"}
+
+
+@app.route("/stats/<user_id>", methods=["GET"])
+@response(StatisticsSchema(many=True))
+def get_stats(user_id: int):
+    return PlayerStats.query.filter_by(user_id=user_id).all()
+
+
+@app.route("/stats/<int:id>", methods=["DELETE"])
+@response(OKRequestSchema)
+def delete_stats(id: int):
+    stats = PlayerStats.query.filter_by(id=id).first()
+    db.session.delete(stats)
+    db.session.commit()
+    return {"description": "Stats deleted successfully"}

@@ -21,6 +21,7 @@ class User(QueryModel):
     role = db.Column(db.Integer, db.ForeignKey("user_roles.id"))
     image = db.Column(db.TEXT())
     team_id = db.Column(db.TEXT())
+    requested_role = db.Column(db.TEXT())
 
     active_role = db.relationship("Role", back_populates="profile")
     athlete_profile = db.relationship(
