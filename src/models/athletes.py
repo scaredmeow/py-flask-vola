@@ -106,3 +106,21 @@ class TrainingTasksProgress(QueryModel):
 
     team_member = db.relationship("TeamMember", back_populates="tasks")
     task = db.relationship("TrainingTasks", back_populates="progress")
+
+
+@dataclass
+class TeamSchedule(QueryModel):
+    __tablename__ = "team_schedule"
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=False
+    )
+    team_id = db.Column(db.Integer, db.ForeignKey("teams.id"))
+    date = db.Column(db.DATE())
+    description = db.Column(db.TEXT())
+    title = db.Column(db.TEXT())
+    opponent = db.Column(db.TEXT())
+    location = db.Column(db.TEXT())
+
+    # team = db.relationship("Team", back_populates="schedule")

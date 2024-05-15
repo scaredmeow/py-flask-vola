@@ -1,9 +1,10 @@
 from flask import Blueprint
-from src.models.athletes import Team, TeamMember, TrainingTasks, TrainingTasksProgress
+from src.models.social import Post
+from src.models.athletes import Team, TeamMember, TeamSchedule, TrainingTasks, TrainingTasksProgress
 from src.models.user_profile import User
 from src.deps.db import db
 from src.decorators import paginated_response
-from src.schemas import HTTPRequestSchema, OKRequestSchema, TaskProgressSchema, TasksSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema, WholeTasksSchema
+from src.schemas import HTTPRequestSchema, OKRequestSchema, ScheduleSchema, ScheduleSpecificSchema, TaskProgressSchema, TasksSchema, TeamMemberSchemaNormal, TeamSchema, TeamMemberSchema, TeamsSchema, WholeTasksSchema
 from apifairy import body, response
 from datetime import datetime
 
@@ -152,3 +153,30 @@ def get_task_progress(team_id: int):
 
     percentage = (number_of_completed_tasks / (number_of_tasks*number_of_team_members))
     return {"message": percentage}
+
+
+@app.route("/schedule", methods=["GET"])
+@response(ScheduleSchema(many=True))
+def get_all_schedule():
+    return TeamSchedule.query.all()
+
+
+@app.route("/schedule/<int:team_id>", methods=["POST"])
+@body(ScheduleSpecificSchema())
+@response(OKRequestSchema)
+def create_schedule(data: dict, team_id: int):
+    schedule = TeamSchedule(team_id=team_id,
+                            date = data.get("date") or datetime.now(),
+                            description = data.get("description"),
+                            location = data.get("location"),
+                            title=data.get("title"),
+                            opponent=data.get("opponent"))
+    db.session.add(schedule)
+    db.session.commit()
+
+    social = Post(user_id=data.get("user_id"),
+                  title=data.get("title"),
+                  content=f"New schedule created at {data.get('location')}, with a possible match up with {data.get('opponent')}, on {data.get('date')}. {data.get('description')}")
+    db.session.add(social)
+    db.session.commit()
+    return {"description": "Schedule created successfully"}

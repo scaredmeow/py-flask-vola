@@ -1,5 +1,5 @@
 from src.models.sports import Sport
-from src.models.athletes import Team, TeamMember, TrainingTasks, TrainingTasksProgress
+from src.models.athletes import Team, TeamMember, TeamSchedule, TrainingTasks, TrainingTasksProgress
 from src.models.social import Comment, Post
 from src.models.user_profile import Role, User
 from vars.enums import OrderDirection
@@ -197,6 +197,20 @@ class TasksSchema(ma.SQLAlchemyAutoSchema):
 
 class WholeTasksSchema(TasksSchema):
     progress = ma.Nested(TaskProgressSchema(only=(['user_id','task_status'])), many=True)
+
+
+class ScheduleSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TeamSchedule
+
+
+class ScheduleSpecificSchema(ma.Schema):
+    description = ma.Str()
+    location = ma.Str()
+    title = ma.Str()
+    opponent = ma.Str()
+    date = ma.Date()
+    user_id = ma.UUID()
 
 
 class StringPaginationSchema(ma.Schema):
