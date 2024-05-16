@@ -26,3 +26,38 @@ def create_post(data: dict):
     db.session.add(post)
     db.session.commit()
 
+
+@app.route("/posts/like", methods=["POST"])
+@body(PostSchema(only=["id"]))
+@response(OKRequestSchema)
+def like_post(data: dict):
+    """Like a post"""
+
+    post = Post.query.get(data.get("id"))
+    post.likes += 1
+    db.session.commit()
+    return {"description": "Post liked successfully"}
+
+
+@app.route("/posts/unlike", methods=["POST"])
+@body(PostSchema(only=["id"]))
+@response(OKRequestSchema)
+def unlike_post(data: dict):
+    """Unlike a post"""
+
+    post = Post.query.get(data.get("id"))
+    post.likes -= 1
+    db.session.commit()
+    return {"description": "Post unliked successfully"}
+
+
+@app.route("/posts/<int:post_id>/comment", methods=["POST"])
+@body(PostSchema(only=["id", "comment"]))
+@response(OKRequestSchema)
+def comment_post(data: dict, post_id: int):
+    """Comment on a post"""
+
+    post = Post.query.get(post_id)
+    post.comments.append(data.get("comment"))
+    db.session.commit()
+    return {"description": "Comment added successfully"}
