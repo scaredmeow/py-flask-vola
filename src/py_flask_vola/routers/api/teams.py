@@ -17,6 +17,13 @@ def get_all_teams():
     return Team.query.all()
 
 
+@app.route("/search", methods=["POST"])
+@body(TeamSchema(only=["name"]))
+@response(TeamsSchema(many=True))
+def search_teams(data: dict):
+    return Team.query.filter(Team.name.ilike(f"%{data.get('name')}%")).all()
+
+
 @app.route("/<int:team_id>", methods=["GET"])
 @response(TeamsSchema())
 def get_specific_teams(team_id: int):
