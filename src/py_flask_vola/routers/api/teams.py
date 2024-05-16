@@ -124,6 +124,8 @@ def create_team_tasks(data: dict, team_id: int):
 def complete_individual_tasks(data: dict, task_id: int):
     team_id = TrainingTasks.query.get(task_id).team_id
     team_member_id = TeamMember.query.filter_by(user_id=data.get("user_id")).first().id
+    print(team_member_id, team_id, data, task_id)
+
     complete_task = TrainingTasksProgress(task_id=task_id, user_id=data.get("user_id"), task_status=True,
                                           team_id=team_id,
                                           team_member_id=team_member_id)
