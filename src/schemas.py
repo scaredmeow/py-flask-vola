@@ -124,7 +124,7 @@ class TeamSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Team
 
-    sport_id = ma.Integer(load_only=True)
+    # sport_id = ma.Integer(load_only=True)
     user_id = ma.UUID(load_only=True)
 
 

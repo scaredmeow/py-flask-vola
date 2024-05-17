@@ -31,6 +31,7 @@ class League(QueryModel):
     name = db.Column(db.TEXT())
     description = db.Column(db.TEXT())
     sport_id = db.Column(db.Integer, db.ForeignKey("sports.id"))
+    sports_name = db.Column(db.TEXT())
     is_open = db.Column(db.BOOLEAN(), default=True)
 
     # sport = db.relationship("Sport", back_populates="leagues")
