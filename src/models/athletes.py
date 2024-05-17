@@ -17,7 +17,7 @@ class Team(QueryModel):
     image = db.Column(db.TEXT())
     sport_id = db.Column(db.Integer, db.ForeignKey("sports.id"))
     organization_id = db.Column(db.Integer, db.ForeignKey("sport_organizations.id"))
-
+    sports_name = db.Column(db.TEXT())
     team_members = db.relationship("TeamMember", back_populates="team")
     sport = db.relationship("Sport", back_populates="teams")
     organization = db.relationship("Organization", back_populates="teams")
