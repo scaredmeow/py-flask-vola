@@ -88,6 +88,8 @@ class PostSchema(ma.SQLAlchemyAutoSchema):
 class CommentSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Comment
+    user_id = ma.UUID()
+    user = ma.Nested(ProfileSchema, dump_only=True)
 
 
 class SocialPostSchema(PostSchema):
