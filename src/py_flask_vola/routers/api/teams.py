@@ -37,7 +37,8 @@ def create_team(data: dict):
     team = Team(name=data.get("name"),
                 description=data.get("description"),
                 sport_id=data.get("sport_id"),
-                image=data.get("image"))
+                image=data.get("image"),
+                sports_name=data.get("sports_name"))
     db.session.add(team)
     db.session.commit()
 
